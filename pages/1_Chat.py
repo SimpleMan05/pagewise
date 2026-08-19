@@ -3,7 +3,7 @@ import uuid
 
 st.set_page_config(
     page_title="PageWise — Chat",
-    page_icon="📄",
+    page_icon="assets/logo.png",
     layout="centered",
 )
 
@@ -15,7 +15,12 @@ with st.spinner("Opening your reading room..."):
 
 inject_css()
 
-st.caption("moonlit chat")
+col1, col2, col3 = st.columns(3)
+# Place the image in the center column
+with col2:
+    st.image("static/logo2.png", width = 150)
+
+st.caption("Let's analyze your document with")
 st.title("PageWise")
 
 # ---------- Session state initialization ----------

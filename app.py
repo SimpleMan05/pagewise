@@ -4,7 +4,7 @@ from src.styles import inject_css, render_toc_item
 
 st.set_page_config(
     page_title="PageWise",
-    page_icon="📄",
+    page_icon="assets/logo.png",
     layout="centered",
 )
 
@@ -19,8 +19,9 @@ except EnvironmentError as e:
 st.markdown(
     """
     <div class="pw-hero">
+        <img src="app/static/logo2.png" width="200" style="margin-bottom: 0.5rem;">
         <h1>PageWise</h1>
-        <div class="pw-tagline">a moonlit chat with your documents</div>
+        <div class="pw-tagline">chat with your documents</div>
     </div>
     """,
     unsafe_allow_html=True,
