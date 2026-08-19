@@ -21,7 +21,7 @@ st.markdown(
     <div class="pw-hero">
         <img src="app/static/logo2.png" width="200" style="margin-bottom: 0.5rem;">
         <h1>PageWise</h1>
-        <div class="pw-tagline">chat with your documents</div>
+        <div class="pw-tagline">A RAG-based chat with your documents</div>
     </div>
     """,
     unsafe_allow_html=True,
