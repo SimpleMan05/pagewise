@@ -1,17 +1,21 @@
 import streamlit as st
 import uuid
 
-from src.ingest import ingest_pdf
-from src.retrieve import connect_to_collection, get_answer
-from src.qdrant_utils import delete_collection
-
 st.set_page_config(
     page_title="PageWise — Chat",
     page_icon="📄",
     layout="centered",
 )
 
-st.caption("Let us see what we have")
+with st.spinner("Opening your reading room..."):
+    from src.ingest import ingest_pdf, get_embedding_model
+    from src.retrieve import connect_to_collection, get_answer
+    from src.qdrant_utils import delete_collection
+    from src.styles import inject_css, render_chat_bubble
+
+inject_css()
+
+st.caption("moonlit chat")
 st.title("PageWise")
 
 # ---------- Session state initialization ----------
@@ -28,7 +32,6 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 
-# ---------- Helper: full reset + redirect to home on error ----------
 def fail_and_redirect(error_message: str):
     delete_collection(st.session_state.collection_name)
     st.session_state.clear()
@@ -52,32 +55,29 @@ if not st.session_state.pdf_ready:
                 fail_and_redirect(f"Something went wrong processing your PDF: {e}")
 
 else:
-    # ---------- Chat interface ----------
+    # ---------- Chat interface (custom bubbles, real left/right alignment) ----------
     for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+        render_chat_bubble(msg["role"], msg["content"])
 
     user_query = st.chat_input("Ask something about your PDF...")
 
     if user_query:
         st.session_state.messages.append({"role": "user", "content": user_query})
-        with st.chat_message("user"):
-            st.markdown(user_query)
+        render_chat_bubble("user", user_query)
 
-        with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
-                try:
-                    if st.session_state.vector_db is None:
-                        st.session_state.vector_db = connect_to_collection(
-                            st.session_state.collection_name
-                        )
-                    answer = get_answer(st.session_state.vector_db, user_query)
-                    st.markdown(answer)
-                    st.session_state.messages.append(
-                        {"role": "assistant", "content": answer}
+        with st.spinner("Thinking..."):
+            try:
+                if st.session_state.vector_db is None:
+                    st.session_state.vector_db = connect_to_collection(
+                        st.session_state.collection_name
                     )
-                except Exception as e:
-                    fail_and_redirect(f"Something went wrong answering your question: {e}")
+                answer = get_answer(st.session_state.vector_db, user_query)
+                render_chat_bubble("assistant", answer)
+                st.session_state.messages.append(
+                    {"role": "assistant", "content": answer}
+                )
+            except Exception as e:
+                fail_and_redirect(f"Something went wrong answering your question: {e}")
 
     # ---------- End Chat button ----------
     st.divider()
