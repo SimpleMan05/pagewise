@@ -2,6 +2,8 @@ import tempfile
 import os
 from pypdf import PdfReader
 
+import streamlit as st
+
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -53,7 +55,7 @@ def chunk_documents(documents: list[Document]) -> list[Document]:
     )
     return splitter.split_documents(documents)
 
-
+@st.cache_resource
 def get_embedding_model() -> HuggingFaceEmbeddings:
     return HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
 
