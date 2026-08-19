@@ -11,7 +11,7 @@ st.set_page_config(
     layout="centered",
 )
 
-st.caption("moonlit chat")
+st.caption("Let us see what we have")
 st.title("PageWise")
 
 # ---------- Session state initialization ----------
